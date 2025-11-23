@@ -4,16 +4,25 @@ import pandas as pd
 
 
 model_path = "speeddating.csv"
-columns_needed = ["attractive", 'attractive_partner', 'attractive_o', 'attractive_important', 'pref_o_attractive',
-                  'sincere', 'sincere_partner', 'sinsere_o', 'sincere_important' , 'pref_o_sincere',
-                  'intelligence', 'intelligence_partner' , 'intelligence_o', 'intellicence_important', 'pref_o_intelligence', 'match']
+columns_needed = ["d_attractive", 'd_attractive_partner', 'd_attractive_o', 'd_attractive_important', 'd_pref_o_attractive',
+                  'd_sincere', 'd_sincere_partner', 'd_sinsere_o', 'd_sincere_important' , 'd_pref_o_sincere',
+                  'd_intelligence', 'd_intelligence_partner' , 'd_intelligence_o', 'd_intellicence_important', 'd_pref_o_intelligence', 'match']
 
 speed_dating_ds = pd.read_csv(model_path, usecols=columns_needed)
 
 #print(speed_dating_ds.isnull().values.any())
 #NO NULL VALUES for our dataset
 
-print(speed_dating_ds.head(5)) #check
+#print(speed_dating_ds.head(5))
+columns = speed_dating_ds.columns
+
+#Looking at unique values per column 
+for col in columns:
+    print(col + " number unique values:")
+    print(speed_dating_ds[col].nunique())
+
+#RESULTS 
+#3 distinct values per column + Match is binary variable 
 
 def e_step():
     #Estimate P(Z|X, Y)
