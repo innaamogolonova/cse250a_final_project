@@ -11,7 +11,7 @@ class Feature:
     raw_data: pd.DataFrame
     encoded_data: np.ndarray
 
-    def __init__(self, name, columns, data, n_x_state=5) -> None:
+    def __init__(self, name, columns, data, n_x_state=3) -> None:
         self.name = name
         self.columns = columns
         self.raw_data = data
