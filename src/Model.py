@@ -17,7 +17,7 @@ class Model:
         raise NotImplementedError
 
     def train(self, X: np.ndarray, Y: np.ndarray, verbose=False) -> None:
-        raise NotADirectoryError
+        raise NotImplementedError
 
     def predict(self, X: np.ndarray) -> np.ndarray:
         raise NotImplementedError

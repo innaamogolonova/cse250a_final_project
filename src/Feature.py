@@ -15,7 +15,7 @@ class Feature:
         self.name = name
         self.columns = columns
         self.raw_data = data
-        self.N_X_STATE = 3
+        self.N_X_STATE = n_x_state
 
     def discretization(self, column_name, value) -> int:
 
