@@ -1,48 +1,47 @@
 import numpy as np
-import matplotlib as plt
-import pandas as pd
+
+from sklearn.metrics import (
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+    confusion_matrix,
+    roc_auc_score,
+    average_precision_score,
+)
 
 
-model_path = "speeddating.csv"
-columns_needed = ["d_attractive", 'd_attractive_partner', 'd_attractive_o', 'd_attractive_important', 'd_pref_o_attractive',
-                  'd_sincere', 'd_sincere_partner', 'd_sinsere_o', 'd_sincere_important' , 'd_pref_o_sincere',
-                  'd_intelligence', 'd_intelligence_partner' , 'd_intelligence_o', 'd_intellicence_important', 'd_pref_o_intelligence', 'match']
+class Model:
 
-speed_dating_ds = pd.read_csv(model_path, usecols=columns_needed)
+    def __init__(self) -> None:
+        raise NotImplementedError
 
-#print(speed_dating_ds.isnull().values.any())
-#NO NULL VALUES for our dataset
+    def train(self, X: np.ndarray, Y: np.ndarray, verbose=False) -> None:
+        raise NotADirectoryError
 
-#print(speed_dating_ds.head(5))
-columns = speed_dating_ds.columns
+    def predict(self, X: np.ndarray) -> np.ndarray:
+        raise NotImplementedError
 
-#Looking at unique values per column 
-for col in columns:
-    print(col + " number unique values:")
-    print(speed_dating_ds[col].nunique())
+    def test(self, X: np.ndarray, Y: np.ndarray) -> dict:
+        prediction_prob = self.predict(X)
+        prediction_label = (prediction_prob >= 0.5).astype(int)
 
-#RESULTS 
-#3 distinct values per column + Match is binary variable 
+        acc = accuracy_score(Y, prediction_label)
+        precision = precision_score(Y, prediction_label)
+        recall = recall_score(Y, prediction_label)
+        f1 = f1_score(Y, prediction_label)
+        roc_auc = roc_auc_score(Y, prediction_prob)
+        pr_auc = average_precision_score(Y, prediction_prob)
+        cm = confusion_matrix(Y, prediction_label)
 
-def e_step():
-    #Estimate P(Z|X, Y)
-    return
+        analysis = {
+            "accuracy": acc,
+            "precision": precision,
+            "recall": recall,
+            "f1_score": f1,
+            "roc_auc": roc_auc,
+            "pr_auc": pr_auc,
+            "confusion_matrix": cm,
+        }
 
-
-def m_step():
-    return
-
-def EM_training():
-    #calling e_step and m_step for a certain amount of iterations
-    #OR until the improvement to the CPT is under a certain threshold
-
-    #return final CPTS
-    return 
-
-def predict_second_date():
-    #takes in the CPTS
-    #return the probability of 2nd date
-    return 0
-
-cpts = EM_training()
-predict_second_date()
+        return analysis

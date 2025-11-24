@@ -3,7 +3,9 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 
 from Feature import Feature
+from Model import Model
 from EM import EM
+from ML import ML
 
 
 def get_columns(name: str):
@@ -23,13 +25,12 @@ def balance_dataset(X: np.ndarray, Y: np.ndarray, random_state: int = 42):
     neg_sample_idx = np.random.choice(neg_idx, size=len(pos_idx), replace=False)
     balanced_idx = np.concatenate([pos_idx, neg_sample_idx])
     np.random.shuffle(balanced_idx)
-    X_balanced = X[balanced_idx]
-    Y_balanced = Y[balanced_idx]
 
-    return X_balanced, Y_balanced
+    return X[balanced_idx], Y[balanced_idx]
 
 
 def run(
+    model: Model,
     X_train: np.ndarray,
     Y_train: np.ndarray,
     X_test: np.ndarray,
@@ -41,7 +42,6 @@ def run(
         X_train, Y_train = balance_dataset(X_train, Y_train)
         X_test, Y_test = balance_dataset(X_test, Y_test)
 
-    model = EM()
     model.train(X_train, Y_train)
     result = model.test(X_test, Y_test)
 
@@ -65,4 +65,7 @@ if __name__ == "__main__":
         X, Y, test_size=0.2, random_state=42, shuffle=True
     )
 
-    run(X_train, Y_train, X_test, Y_test, balance=True)
+    run(EM(), X_train, Y_train, X_test, Y_test, balance=False)
+    run(EM(), X_train, Y_train, X_test, Y_test, balance=True)
+    run(ML(), X_train, Y_train, X_test, Y_test, balance=False)
+    run(ML(), X_train, Y_train, X_test, Y_test, balance=True)

@@ -1,16 +1,9 @@
 import numpy as np
-from sklearn.metrics import (
-    accuracy_score,
-    precision_score,
-    recall_score,
-    f1_score,
-    confusion_matrix,
-    roc_auc_score,
-    average_precision_score,
-)
+from Model import Model
+from tqdm import tqdm
 
 
-class EM:
+class EM(Model):
 
     N_X_STATE: int
     N_Z_STATE: int
@@ -44,7 +37,7 @@ class EM:
         )
         self.Y_given_Z = np.random.uniform(init_min, init_max, self.N_Z_STATE**self.N_Z)
 
-    def estimate(self, X: np.ndarray, Y: np.ndarray):
+    def estimate(self, X: np.ndarray, Y: np.ndarray) -> None:
 
         z = np.arange(self.N_Z_STATE**self.N_Z)
         Z_bits = [(z >> i) & 1 for i in range(self.N_Z)]
@@ -82,22 +75,30 @@ class EM:
                 numerator[nonzero_mask] / denominator[nonzero_mask]
             )
 
-    def train(self, X: np.ndarray, Y: np.ndarray, max_epochs=100, diff_ll=1e-2) -> None:
+    def train(
+        self,
+        X: np.ndarray,
+        Y: np.ndarray,
+        verbose=False,
+        max_epochs=100,
+        diff_ll=1e-2,
+        clip=1e-12,
+    ) -> None:
         prev_log_likelihood = -np.inf
 
-        for epoch in range(max_epochs):
+        for epoch in tqdm(range(max_epochs)):
             self.estimate(X, Y)
             prediction = self.predict(X)
-            epsilon = 1e-12
-            prediction_clipped = np.clip(prediction, epsilon, 1 - epsilon)
+            prediction_clipped = np.clip(prediction, clip, 1 - clip)
             log_likelihood = np.sum(
                 Y * np.log(prediction_clipped)
                 + (1 - Y) * np.log(1 - prediction_clipped)
             )
-            print(f"Epoch {epoch+1}, log-likelihood: {log_likelihood:.6f}")
+            if verbose:
+                print(f"Epoch {epoch+1}, log-likelihood: {log_likelihood:.6f}")
             self.update(X, Y)
 
-            if abs(log_likelihood - prev_log_likelihood) < diff_ll:
+            if verbose and abs(log_likelihood - prev_log_likelihood) < diff_ll:
                 print("Early stop due to convergency")
                 break
             prev_log_likelihood = log_likelihood
@@ -116,27 +117,3 @@ class EM:
         prob_Z_given_X /= prob_Z_given_X.sum(axis=1, keepdims=True)
 
         return np.dot(prob_Z_given_X, self.Y_given_Z)
-
-    def test(self, X: np.ndarray, Y: np.ndarray) -> dict:
-        prediction_prob = self.predict(X)
-        prediction_label = (prediction_prob >= 0.5).astype(int)
-
-        acc = accuracy_score(Y, prediction_label)
-        precision = precision_score(Y, prediction_label)
-        recall = recall_score(Y, prediction_label)
-        f1 = f1_score(Y, prediction_label)
-        roc_auc = roc_auc_score(Y, prediction_prob)
-        pr_auc = average_precision_score(Y, prediction_prob)
-        cm = confusion_matrix(Y, prediction_label)
-
-        analysis = {
-            "accuracy": acc,
-            "precision": precision,
-            "recall": recall,
-            "f1_score": f1,
-            "roc_auc": roc_auc,
-            "pr_auc": pr_auc,
-            "confusion_matrix": cm,
-        }
-
-        return analysis
