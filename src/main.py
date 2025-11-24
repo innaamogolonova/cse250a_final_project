@@ -50,7 +50,7 @@ def run(
 
 if __name__ == "__main__":
 
-    data = pd.read_csv("speeddating.csv")
+    data = pd.read_csv("../speeddating.csv")
 
     X_list = []
     for f in ["attractive", "sincere", "intelligence"]:
