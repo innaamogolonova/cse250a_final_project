@@ -9,7 +9,7 @@
 
 \usepackage[utf8]{inputenc} % allow utf-8 input
 \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
-\usepackage{hyperref}       % hyperlinks
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}       % hyperlinks
 \usepackage{url}            % simple URL typesetting
 \usepackage{booktabs}       % professional-quality tables
 \usepackage{amsfonts}       % blackboard math symbols
@@ -19,7 +19,16 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 
-\title{Predicting probability of scoring a second date }
+\usepackage{booktabs}   % for \toprule, \midrule, \bottomrule
+\usepackage{siunitx}    % for aligned numeric columns
+
+\sisetup{
+  table-number-alignment = center,
+  round-mode = places,
+  round-precision = 3
+}
+
+\title{Predicting the probability of scoring a second date }
 
 
 % The \author macro works with any number of authors. There are two commands
@@ -34,6 +43,8 @@
 \author{%
   Baye-by Come Back\\
   University of California, San Diego\\
+  Ekansh Kushwaha, Inna Amogolonova, Michael Dai, Sean Ko, Zirui You\\
+  \href{https://github.com/innaamogolonova/cse250a_final_project}{\textit{GitHub Repo Link}} \\
   % examples of more authors
   % \And
   % Coauthor \\
@@ -74,27 +85,27 @@
 
 
 \section{Problem Description}
+“Will I see them on another date?” A common question that has troubled love seeking individuals for centuries. Now equipped with knowledge of Bayesian networks, is there a mathematical way we can predict our chances? More clearly stated, given 15 features about two individuals that relate to {Attractiveness, Intelligence, and Sincerity}, what is the probability that these two will go on another date? 
 
-We will be predicting whether participants of a first date will go on a second date from features such as attractiveness, sincerity, intelligence, and ambition. Given the property of our dataset, we will construct a Bayesian Network with hidden variables to model the problem, learn CPTs using Expectation Maximization, and apply exact inference for prediction. We will be analyzing how the raw features affect the hidden variables and how the hidden variables influence the outcome of a second date.
+In the real world, the problem of combining many subjective variables of attraction into a binary match or non-match classification is a difficult task. Wouldn’t we all want there to be a formula of determining the outcome of the first date? In this project we attempt to do just that: translating the uncomfortable “swipe” right or left decision into a mathematical prediction. From our speed dating data set, we will construct a Bayesian Network with hidden variables to model the problem, learn the CPTs, apply EM and ML algorithms, and compare which model creates the most accurate prediction. \\
 
-\section{Dataset Source}
 
-We will be using the Kaggle \href{https://www.kaggle.com/datasets/polarbearyap/speed-dating}{\textit{Speed~Dating}} dataset. It contains information from 8,378 participants from the years 2002 to 2004.
+\section{Dataset Source and Processing}
 
-Each row represents one participant and their date. We plan to use 3 attributes from the dataset, and for each attribute (attractiveness, intelligence, sincerity), the dataset provides 5 related features.
+Our data comes from a public Kaggle dataset titled \href{https://www.kaggle.com/datasets/polarbearyap/speed-dating}{\textit{"speed dating"}}. It aggregates experimental speed dating information from 8,378 participants from 2002 to 2004. It has 122 features per speed date as well as one more column indicating whether they both would want to go on a second date. Our dataset conveniently included columns that discretized the feature data. All we had to do was map the bins to integer values so that we could run our models on it. Overall we decided to use a subset of 15 features from the 122 features that we had as well as the column that indicated whether they would both go on a second date. 
 
-For example, for \textbf{attractiveness}, the dataset includes:
+The columns we decided to use corresponded to the qualities of a person that we thought would influence the decision of a second date the most: attractiveness, intelligence, and sincerity. For each of those qualities, we included the participant's own rating of that attribute, the participant's rating of that attribute in the opposition, the opposition's rating of themselves on that attribute, the preference of the participant seeing that attribute in the opposition, and the preference of the opposition seeing that attribute in a participant. For example, for \textbf{attractiveness}, the dataset includes the following discrete values:
 \begin{itemize}
-  \item \texttt{attractive}: Participant's self-rating on attractiveness
-  \item \texttt{attractive\_partner}: Participant's rating of their partner's attractiveness
-  \item \texttt{attractive\_o}: Partner's rating of the participant's attractiveness during the event
-  \item \texttt{attractive\_important}: How important attractiveness is to the participant when choosing a partner
-  \item \texttt{pref\_o\_attractive}: How important the participant believes their partner considers attractiveness
+  \item \texttt{d\_attractive}: Participant's self-rating on attractiveness
+  \item \texttt{d\_attractive\_partner}: Participant's rating of their partner's attractiveness
+  \item \texttt{d\_attractive\_o}: Partner's rating of the participant's attractiveness during the event
+  \item \texttt{d\_attractive\_important}: How important attractiveness is to the participant when choosing a partner
+  \item \texttt{d\_pref\_o\_attractive}: How important the participant believes their partner considers attractiveness
 \end{itemize}
 
-We will include $5\times 3=15$ features in total for our task.
+There were no missing values in the features that we decided to use so we did not have to process our dataset any further. Our feature selection was important for our problem as it allowed us to only include features that would have a high explaining effect on the outcome. \\
 
-\section{Methodology}
+\section{Modeling and Inference}
 
 Given raw features $\vec{X}$, we want to infer the probability of a second date $Y$. We want to build a model using the dataset $V_t = \{\vec{X}_t,Y_t\}$. We constructed 3 hidden variables $\vec{Z} = \{Z_1,Z_2,Z_3\}$, each $Z$ represents an attribute (attractiveness, intelligence, sincerity) and incorporates information from 5 features. We want to find out how the raw features $\vec{X}$ affect the hidden variables $\vec{Z}$ and how the hidden variables $\vec{Z}$ influence the outcome of a second date.
 
@@ -107,7 +118,7 @@ Let $T$ be the cardinality of the dataset, $x_i$ be the features, $z_i$ be the h
 % We assume x and y to be independent.
 
 
-\subsection{Learning}
+\subsection{EM Algorithm}
 
 We want to learn the CPTs using Expectation Maximization.
 
@@ -169,16 +180,89 @@ $$
 
 % \[ P(Y|\vec{Z}) \leftarrow \frac{\sum_{i=1}^T P(Y,\vec{Z}|\vec{X}_i,Y_i)}{\sum_{i=1}^T P(Z|\vec{X}_i,Y_i)} = \frac{\sum_{i=1}^T I(Y,Y_i) P(\vec{Z}|\vec{X}_i,Y_i)}{\sum_{i=1}^T P(Z|\vec{X}_i,Y_i)} \]
 
-\subsection{Inference}
-
+\subsubsection{Inference}
 
 \[
   \begin{aligned}
-    P(Y=1 | \vec{X})
-     & = \sum_{\vec{Z}} P(Y=1, \vec{Z} | \vec{X}) = \sum_{\vec{Z}} P(\vec{Z} |\vec{X}) P(Y = 1|\vec{Z}) \\
-     & = \sum_{\vec{Z}}P(Y=1|\vec{Z})\prod_{i=1}^3P(Z_i|\vec{X}^{(i)})
+    P(Y=1 \mid \vec{X})
+     & = \sum_{\vec{Z}} P(Y=1, \vec{Z} \mid \vec{X}) 
+       = \sum_{\vec{Z}} P(\vec{Z} \mid \vec{X}) P(Y = 1 \mid \vec{Z}) \\
+     & = \sum_{\vec{Z}} P(Y=1 \mid \vec{Z}) \prod_{i=1}^3 P(Z_i \mid \vec{X}^{(i)})
   \end{aligned}
 \]
+
+
+
+\subsection{ML algorithm}
+\begin{center}
+  \includegraphics[width=\linewidth]{mle.png}
+\end{center}
+
+The second model we used was without hidden states and was a Naive Bayes model in which all features $\vec{X}$ are parents of $Y$. Since all features are known, we can directly use MLE to estimate our CPTs. Here, let N be the number of samples. Our goal is to find probability of 2nd date $Y$ given all 15 features $\vec{X}$ by calculating $P(Y|\vec{X})$, which is shown below. 
+\[
+  \begin{aligned}
+    &P(Y \mid \vec{X})  = \frac{P(\vec{X}, Y)}{P(\vec{X})} \\
+    &\text{where:}\\
+    &P(\vec{X}, Y)  = \frac{1}{N} \sum_{n=1}^N I(\vec{x}, \vec{x}^{(n)}) \, I(y, y^{(n)}) \\
+    &P(\vec{X})  = \frac{1}{N} \sum_{n=1}^N I(\vec{x}, \vec{x}^{(n)})
+  \end{aligned}
+\]
+\\
+
+
+\section{Results and Discussion}
+
+In this project, we implemented an 80/20 test–train split, which is common practice in machine learning to assess how the model generalizes to unseen (test) data. We ran two different algorithms, Expectation Maximization (EM) and Maximum Likelihood (ML), each with unbalanced and balanced options. The dataset by itself contains a lot more non-matches than matches, making it heavily unbalanced. To balance it, we randomly sampled the same number of matches and non-matches and ran the model on that new data. The metrics we used to assess model performance were the following: 
+\begin{itemize}
+    \item\emph{Accuracy:} the percentage of predictions model got right $\frac{TP + TN}{Total}$
+    \item\emph{Precision:} percentage of positive predictions that were labeled correctly $\frac{TP}{TP + FP}$
+    \item\emph{Recall:} percentage of true positives out of the actual positive instances $\frac{TP}{TP+FN}$
+    \item\emph{F1:} metric of precision and recall together 
+    \item\emph{ROC AUC Score:} ROC, which plots TPR against FPR, area under curve score
+    \item\emph{PR AUC Score:} precision-recall area under curve score 
+    \item\emph{Confusion Matrix (using numpy):} count of $\begin{smallmatrix}\text{True Negative (TN)} & \text{False Positive (FP)} \\ \text{False Negative (FN)} & \text{True Positive (TP)}\end{smallmatrix}$ 
+\end{itemize}
+
+\begin{table}[ht]
+\centering
+\caption{Performance of 4 different models on the dataset evaluated using the given metrics.}
+\label{tab:model_results}
+\begin{tabular}{
+  l
+  S[table-format=1.3]  % Accuracy
+  S[table-format=1.3]  % Precision
+  S[table-format=1.3]  % Recall
+  S[table-format=1.3]  % F1
+  S[table-format=1.3]  % ROC AUC
+  S[table-format=1.3]  % PR AUC
+  c                    % Confusion matrix
+}
+\toprule
+{Model} & {Accuracy} & {Precision} & {Recall} & {$F_1$} &
+{ROC AUC} & {PR AUC} & {Conf. Matrix} \\
+\midrule
+EM unbalanced & 0.819 & 0.409 & 0.132 & 0.200 & 0.744 & 0.355 &
+$\begin{bmatrix} 1334 &  55 \\ 249 &  39 \end{bmatrix}$ \\
+EM balanced  & 0.700 & 0.698 & 0.707 & 0.702 & 0.733 & 0.702 &
+$\begin{bmatrix}  199 &  88 \\  84 & 203 \end{bmatrix}$ \\
+ML unbalanced & 0.526 & 0.163 & 0.429 & 0.236 & 0.493 & 0.171 &
+$\begin{bmatrix}  758 & 631 \\ 164 & 123 \end{bmatrix}$ \\
+ML balanced  & 0.502 & 0.502 & 0.533 & 0.517 & 0.490 & 0.498 &
+$\begin{bmatrix}  135 & 152 \\ 134 & 153 \end{bmatrix}$ \\
+\bottomrule
+\end{tabular}
+\end{table} 
+
+Even though the unbalanced EM reached the highest accuracy, it performed much worse on the other tested metrics. This is due to the unbalanced nature of the data, where there are significantly more non-matches than matches, making the model more biased toward non-matches. This can be seen in the confusion matrix, which displays an overwhelming amount of negative predictions and a very small number of true positives. This model mostly captures the dominant non-match pattern in the data but misses many actual matches, indicating that it fails to exploit the more meaningful patterns in the data that distinguish successful from unsuccessful dates.
+
+The best overall performing model was the balanced EM. This predictor performs relatively well and is more evenly distributed across all tested metrics. Precision, recall, F1, and PR AUC all increased compared to the unbalanced EM model. The balanced EM performed better at predicting positive outcomes (match) than the unbalanced EM, since the latter can rely on just “guessing” a non-match that heavily overpowers the dataset, making the prediction accurate but not precise. The overall accuracy decrease of balanced EM is a trade-off for improving the other metrics. The balanced EM model appears to capture more accurate predictions of first date success, measured by matching or not matching, compared to the other models we have implemented. However, the confusion matrix still shows a noticeable number of false negatives and false positives, suggesting that our chosen features do not fully explain real-world second date decisions.
+
+The ML model performance was poor compared to the EM algorithm. Both ML implementations performed poorly on the data, producing barely better than chance (0.50) predictions. The unbalanced version yielded low precision, F1, and PR AUC scores, making the balanced implementation seem better. Nonetheless, even the balanced ML produced predictions that can largely be attributed to random guessing. Overall, the ML algorithms performed much worse than the EM ones, illustrating that the more robust EM-based model with latent variables generalizes better on unseen data. Additionally, balanced implementations consistently outperformed the unbalanced ones, showing the significance of dataset manipulation and balancing. \\
+
+\section{Conclusion}
+In this project, we attempted to predict the probability of a second date based on features derived from three hand-picked traits: attractiveness, intelligence, and sincerity. We constructed a Bayesian Network with hidden variables and applied the EM and ML algorithms to obtain the most accurate prediction of a match. The EM models significantly outperformed the ML ones, and there was notable improvement in balancing the dataset. The balanced EM model performed best overall, giving us the highest and most evenly distributed results on several model assessment metrics. 
+
+Even with these successful predictions, our model’s performance can be improved, as our project had several limitations. First, the original unbalanced nature of the dataset created a strong bias towards non-match predictions. We handled this through randomly sampling the same number of matches as non-matches. This balancing technique proved beneficial for model performance but considerably decreased the amount of data available for us to work with. An improved implementation of this project would use a large, more evenly distributed dataset or more sophisticated methods for handling imbalance. Another limitation is that we hand-picked traits and features that seemed the most relevant. Due to the short timeline of this project, that strategy was the most efficient way to produce a working result. However, this means that there might be other features and traits that are stronger predictors of second date match. Future work should conduct a more in-depth analysis of which features are most significant in forming this prediction. Another avenue for potential extensions is to explore richer networks that are able to capture more nuanced processes that go into match making. Overall, this project is an interesting contribution to exploring how finding love can be made more certain through probabilistic methods. 
 
 
 \end{document}
