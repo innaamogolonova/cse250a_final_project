@@ -7,6 +7,8 @@ from Model import Model
 from EM import EM
 from ML import ML
 
+import data_info as di
+
 
 def get_columns(name: str):
     return [
@@ -36,7 +38,13 @@ def run(
     X_test: np.ndarray,
     Y_test: np.ndarray,
     balance: bool,
+    show_data_info: bool,
+    show_plot: bool,
 ):
+
+    if show_data_info:
+        df = di.get_feature_df()
+        di.get_data_info(df,show_plot)
 
     if balance:
         X_train, Y_train = balance_dataset(X_train, Y_train)
@@ -65,7 +73,26 @@ if __name__ == "__main__":
         X, Y, test_size=0.2, random_state=42, shuffle=True
     )
 
-    run(EM(), X_train, Y_train, X_test, Y_test, balance=False)
-    run(EM(), X_train, Y_train, X_test, Y_test, balance=True)
-    run(ML(), X_train, Y_train, X_test, Y_test, balance=False)
-    run(ML(), X_train, Y_train, X_test, Y_test, balance=True)
+    run(EM(), X_train, Y_train, X_test, Y_test, balance=False, show_data_info=False, show_plot=False)
+    run(EM(), X_train, Y_train, X_test, Y_test, balance=True, show_data_info=False, show_plot=False)
+    run(ML(), X_train, Y_train, X_test, Y_test, balance=False, show_data_info=False, show_plot=False)
+    run(ML(), X_train, Y_train, X_test, Y_test, balance=True, show_data_info=False, show_plot=False)
+
+
+
+    data_2 = di.get_feature_df()
+
+    X_2 = data_2.iloc[:,:13].copy().to_numpy()
+    Y_2 = np.array(data_2["match"].copy())
+
+    X_train_2, X_test_2, Y_train_2, Y_test_2 = train_test_split(
+    X_2, Y_2, test_size=0.2, random_state=42, shuffle=True
+    )
+
+
+    run(EM(), X_train_2, Y_train_2, X_test_2, Y_test_2, balance=False, show_data_info=False, show_plot=False)
+    run(EM(), X_train_2, Y_train_2, X_test_2, Y_test_2, balance=True, show_data_info=False, show_plot=False)
+    run(ML(), X_train_2, Y_train_2, X_test_2, Y_test_2, balance=False, show_data_info=False, show_plot=False)
+    run(ML(), X_train_2, Y_train_2, X_test_2, Y_test_2, balance=True, show_data_info=False, show_plot=False)
+
+
