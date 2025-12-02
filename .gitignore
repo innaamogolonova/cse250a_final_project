@@ -8,3 +8,4 @@ report.log
 report.fls
 report.fdb_latexmk
 report.aux
+.DS_Store

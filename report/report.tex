@@ -92,18 +92,18 @@ In the real world, the problem of combining many subjective variables of attract
 
 \section{Dataset Source and Processing}
 
-Our data comes from a public Kaggle dataset titled \href{https://www.kaggle.com/datasets/polarbearyap/speed-dating}{\textit{"speed dating"}}. It aggregates experimental speed dating information from 8,378 participants from 2002 to 2004. It has 122 features per speed date as well as one more column indicating whether they both would want to go on a second date. Our dataset conveniently included columns that discretized the feature data. All we had to do was map the bins to integer values so that we could run our models on it. Overall we decided to use a subset of 15 features from the 122 features that we had as well as the column that indicated whether they would both go on a second date. 
+Our data comes from a public Kaggle dataset titled \href{https://www.kaggle.com/datasets/polarbearyap/speed-dating}{\textit{"speed dating"}}. It aggregates experimental speed dating information from 8,378 participants from 2002 to 2004. It has 122 features per speed date as well as one more column indicating whether they both would want to go on a second date. Our dataset conveniently included columns that discretized the feature data, with each feature having 3 bins. All we had to do was map the bins to integer values so that we could run our models on it. Overall we decided to use a subset of 15 features from the 122 features that we had as well as the column that indicated whether they would both go on a second date. 
 
 The columns we decided to use corresponded to the qualities of a person that we thought would influence the decision of a second date the most: attractiveness, intelligence, and sincerity. For each of those qualities, we included the participant's own rating of that attribute, the participant's rating of that attribute in the opposition, the opposition's rating of themselves on that attribute, the preference of the participant seeing that attribute in the opposition, and the preference of the opposition seeing that attribute in a participant. For example, for \textbf{attractiveness}, the dataset includes the following discrete values:
 \begin{itemize}
-  \item \texttt{d\_attractive}: Participant's self-rating on attractiveness
+  \item \texttt{d\_attractive}: Participant's self-rating on attractiveness {}
   \item \texttt{d\_attractive\_partner}: Participant's rating of their partner's attractiveness
   \item \texttt{d\_attractive\_o}: Partner's rating of the participant's attractiveness during the event
   \item \texttt{d\_attractive\_important}: How important attractiveness is to the participant when choosing a partner
   \item \texttt{d\_pref\_o\_attractive}: How important the participant believes their partner considers attractiveness
 \end{itemize}
 
-There were no missing values in the features that we decided to use so we did not have to process our dataset any further. Our feature selection was important for our problem as it allowed us to only include features that would have a high explaining effect on the outcome. \\
+The features that outlined preferences came in bins of [0-15], [16-20], [21-100] which we mapped to 0, 1, 2 respectively. All the other features came in bins [0-5], [6-8], [9-10] which we again mapped to 0, 1, 2 respectively. There were no missing values in the features that we decided to use so we did not have to process our dataset any further. Our feature selection was important for our problem as it allowed us to only include features that would have a high explaining effect on the outcome. \\
 
 \section{Modeling and Inference}
 
@@ -198,7 +198,7 @@ $$
   \includegraphics[width=\linewidth]{mle.png}
 \end{center}
 
-The second model we used was without hidden states and was a Naive Bayes model in which all features $\vec{X}$ are parents of $Y$. Since all features are known, we can directly use MLE to estimate our CPTs. Here, let N be the number of samples. Our goal is to find probability of 2nd date $Y$ given all 15 features $\vec{X}$ by calculating $P(Y|\vec{X})$, which is shown below. 
+The second model we used was without hidden states and was another Bayesian network with similar structure as the Noisy-OR model in which all features $\vec{X}$ are parents of $Y$. Since all features are known, we can directly use MLE to estimate our CPTs. Here, let N be the number of samples. Our goal is to find probability of 2nd date $Y$ given all 15 features $\vec{X}$ by calculating $P(Y|\vec{X})$, which is shown below. 
 \[
   \begin{aligned}
     &P(Y \mid \vec{X})  = \frac{P(\vec{X}, Y)}{P(\vec{X})} \\
