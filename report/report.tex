@@ -264,5 +264,25 @@ In this project, we attempted to predict the probability of a second date based 
 
 Even with these successful predictions, our model’s performance can be improved, as our project had several limitations. First, the original unbalanced nature of the dataset created a strong bias towards non-match predictions. We handled this through randomly sampling the same number of matches as non-matches. This balancing technique proved beneficial for model performance but considerably decreased the amount of data available for us to work with. An improved implementation of this project would use a large, more evenly distributed dataset or more sophisticated methods for handling imbalance. Another limitation is that we hand-picked traits and features that seemed the most relevant. Due to the short timeline of this project, that strategy was the most efficient way to produce a working result. However, this means that there might be other features and traits that are stronger predictors of second date match. Future work should conduct a more in-depth analysis of which features are most significant in forming this prediction. Another avenue for potential extensions is to explore richer networks that are able to capture more nuanced processes that go into match making. Overall, this project is an interesting contribution to exploring how finding love can be made more certain through probabilistic methods. 
 
+\section{Reflections and Contributions}
+\textbf{Ekansh Kushwaha}\\ 
+For the technical execution, I helped drive the selection of our two final models and outlined the implementation roadmap to ensure our code was structured effectively. I also took ownership of the 'Data Sourcing and Processing' section in our final report. This project was a major confidence builder for me. It bridged the gap between theory and practice, teaching me how to adapt standard classroom models for messy, real-world scenarios. It also sharpened my ability to handle public datasets and reinforced the value of collaborative development. I used Gen AI in parts of the writing process to help convey my thoughts in a more clear and succinct manner.
+
+\textbf{Inna Amogolonova}\\
+For the report, I take primary ownership over the “Results and Discussion” and the “Conclusion” sections. My other contributions include active participation in team meetings, effective communication in the chat throughout the entire project, and overall edits to the final report. Our team worked well together overall and everyone participated their fair share. 
+This project was helpful in extending my knowledge of the topics we discussed in lecture. As a hands-on learner, application of theory in this way is the most helpful way for me to learn and increase my comprehension of topics that were previously unfamiliar. The topic was interesting and kept me motivated throughout the entire project. Overall, through working on this project, I have gained a deeper understanding that will stick with me much longer than the extent of this class, which I think is very valuable. For future students, I would suggest starting early and getting the majority of the project done by Milestone 2, if possible. This is what my team did and it relieved a lot of stress going into week 10/finals. 
+
+
+\textbf{Michael Dai}\\
+
+\textbf{Sean Ko}\\
+I drew up the Bayesian networks and wrote out the mathematical derivations for the EM algorithm. I was also a part of the group effort to find the problem statement, dataset, and the features our team wanted to use. The derivations and the drawing solidified my understanding of how EM is used in practice and also broadened my view of where Bayesian networks can be applied. What really helped our team find success was early communication and ownership. Everybody played a part and was not shy to voice their opinion / listen to others.
+
+\textbf{Zirui You}\\
+I developed the model architecture and formulated the experimental design, including comparisons between models with and without hidden states and analyses of balanced versus unbalanced datasets. Additionally, I was responsible for the implementation of the project code and assisted in deriving the EM algorithm’s mathematical formulations. In this project, I learned how important hidden states are when the dataset is limited. Without them, the CPT size explodes to 14,348,907, making it larger than the dataset and impossible to estimate reliably.  Adding 3 hidden states decouples feature dependencies, reduces the CPT size to 737, and significantly improves performance. Although I initially worried that our model was too simple, the hidden-state model still reached about 70\% accuracy and precision on the balanced test set, showing that the methods from this course are genuinely effective for real-world problems.
+
+
+\section{References}
+Khin Yap, J. (2020). Speed dating [Data set]. Kaggle. Retrieved on Nov 19, 2025 from https://www.kaggle.com/datasets/polarbearyap/speed-dating. 
 
 \end{document}
