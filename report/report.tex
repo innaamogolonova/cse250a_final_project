@@ -253,11 +253,49 @@ $\begin{bmatrix}  135 & 152 \\ 134 & 153 \end{bmatrix}$ \\
 \end{tabular}
 \end{table} 
 
+Table 1 shows the performance of each model on the selected metrics. The numbers are rounded to three decimal points from the raw result given by running the code. The raw terminal output of the code can be seen in Appendix A.
+
 Even though the unbalanced EM reached the highest accuracy, it performed much worse on the other tested metrics. This is due to the unbalanced nature of the data, where there are significantly more non-matches than matches, making the model more biased toward non-matches. This can be seen in the confusion matrix, which displays an overwhelming amount of negative predictions and a very small number of true positives. This model mostly captures the dominant non-match pattern in the data but misses many actual matches, indicating that it fails to exploit the more meaningful patterns in the data that distinguish successful from unsuccessful dates.
 
 The best overall performing model was the balanced EM. This predictor performs relatively well and is more evenly distributed across all tested metrics. Precision, recall, F1, and PR AUC all increased compared to the unbalanced EM model. The balanced EM performed better at predicting positive outcomes (match) than the unbalanced EM, since the latter can rely on just “guessing” a non-match that heavily overpowers the dataset, making the prediction accurate but not precise. The overall accuracy decrease of balanced EM is a trade-off for improving the other metrics. The balanced EM model appears to capture more accurate predictions of first date success, measured by matching or not matching, compared to the other models we have implemented. However, the confusion matrix still shows a noticeable number of false negatives and false positives, suggesting that our chosen features do not fully explain real-world second date decisions.
 
-The ML model performance was poor compared to the EM algorithm. Both ML implementations performed poorly on the data, producing barely better than chance (0.50) predictions. The unbalanced version yielded low precision, F1, and PR AUC scores, making the balanced implementation seem better. Nonetheless, even the balanced ML produced predictions that can largely be attributed to random guessing. Overall, the ML algorithms performed much worse than the EM ones, illustrating that the more robust EM-based model with latent variables generalizes better on unseen data. Additionally, balanced implementations consistently outperformed the unbalanced ones, showing the significance of dataset manipulation and balancing. \\
+The ML model performance was poor compared to the EM algorithm. Both ML implementations performed poorly on the data, producing barely better than chance (0.50) predictions. The unbalanced version yielded low precision, F1, and PR AUC scores, making the balanced implementation seem better. Nonetheless, even the balanced ML produced predictions that can largely be attributed to random guessing. 
+
+After the initial iteration of the project, we decided to try running our models with unbinned data. All the features still maintained discrete values, some values were given a score 1-100 and others a score of 1-10. Previously, the values were attributed into 3 bins, described in the \emph{Dataset Source and Processing} section. Table 2 displays the results of running the four models described above on unbinned data and evaluates them on the same metrics as before.  
+
+\begin{table}[ht]
+\centering
+\caption{Un-binned data performance.}
+\label{tab:model_results}
+\begin{tabular}{
+  l
+  S[table-format=1.3]  % Accuracy
+  S[table-format=1.3]  % Precision
+  S[table-format=1.3]  % Recall
+  S[table-format=1.3]  % F1
+  S[table-format=1.3]  % ROC AUC
+  S[table-format=1.3]  % PR AUC
+  c                    % Confusion matrix
+}
+\toprule
+{Model} & {Accuracy} & {Precision} & {Recall} & {$F_1$} &
+{ROC AUC} & {PR AUC} & {Conf. Matrix} \\
+\midrule
+EM unbalanced & 0.836 & 0.557 & 0.206 & 0.300 & 0.787 & 0.425 &
+$\begin{bmatrix} 1342 &  47 \\ 228 &  59 \end{bmatrix}$ \\
+EM balanced  & 0.730 & 0.72 & 0.753 & 0.736 & 0.801 & 0.787 &
+$\begin{bmatrix}  203 &  84 \\  71 & 216 \end{bmatrix}$ \\
+ML unbalanced & 0.507 & 0.183 & 0.544 & 0.274 & 0.517 & 0.182 &
+$\begin{bmatrix}  694 & 695 \\ 131 & 156 \end{bmatrix}$ \\
+ML balanced  & 0.524 & 0.523 & 0.554 & 0.538 & 0.521 & 0.511 &
+$\begin{bmatrix}  142 & 145 \\ 128 & 159 \end{bmatrix}$ \\
+\bottomrule
+\end{tabular}
+\end{table} 
+
+Using the unbinned data, there has been a noticeable increase in performance across the board in almost all of the metrics, except for the accuracy in ML unbalanced. This improvement can be attributed to a general increase of true negative and true positive predictions, which is reflected in the confusion matrix. The general trend still remains: unbalanced EM had the highest accuracy, balanced EM had the best overall performance, the two ML models performed worse, and results from balanced ML are very close to chance. 
+
+Overall, the ML algorithms performed much worse than the EM ones, illustrating that the more robust EM-based model with latent variables generalizes better on unseen data. Additionally, balanced implementations consistently outperformed the unbalanced ones, showing the significance of dataset manipulation and balancing. Additionally, in our second implementation, using unbinned data noticeably improved the performance on the given metrics but the originally discovered trends of model performance were maintained.  \\
 
 \section{Conclusion}
 In this project, we attempted to predict the probability of a second date based on features derived from three hand-picked traits: attractiveness, intelligence, and sincerity. We constructed a Bayesian Network with hidden variables and applied the EM and ML algorithms to obtain the most accurate prediction of a match. The EM models significantly outperformed the ML ones, and there was notable improvement in balancing the dataset. The balanced EM model performed best overall, giving us the highest and most evenly distributed results on several model assessment metrics. 
@@ -266,17 +304,16 @@ Even with these successful predictions, our model’s performance can be improve
 
 \section{Reflections and Contributions}
 \textbf{Ekansh Kushwaha}\\ 
-For the technical execution, I helped drive the selection of our two final models and outlined the implementation roadmap to ensure our code was structured effectively. I also took ownership of the 'Data Sourcing and Processing' section in our final report. This project was a major confidence builder for me. It bridged the gap between theory and practice, teaching me how to adapt standard classroom models for messy, real-world scenarios. It also sharpened my ability to handle public datasets and reinforced the value of collaborative development. I used Gen AI in parts of the writing process to help convey my thoughts in a more clear and succinct manner.
+For the technical execution, I helped drive the selection of our two final models and outlined the implementation roadmap to ensure our code was structured effectively. I also took ownership of the 'Data Sourcing and Processing' section in our final report. This project was a major confidence builder for me. It bridged the gap between theory and practice, teaching me how to adapt standard classroom models for messy, real-world scenarios. It also sharpened my ability to handle public datasets and reinforced the value of collaborative development. I used Gen AI in parts of the writing process to help convey my thoughts in a more clear and succinct manner.\\
 
 \textbf{Inna Amogolonova}\\
-For the report, I take primary ownership over the “Results and Discussion” and the “Conclusion” sections. My other contributions include active participation in team meetings, effective communication in the chat throughout the entire project, and overall edits to the final report. Our team worked well together overall and everyone participated their fair share. 
-This project was helpful in extending my knowledge of the topics we discussed in lecture. As a hands-on learner, application of theory in this way is the most helpful way for me to learn and increase my comprehension of topics that were previously unfamiliar. The topic was interesting and kept me motivated throughout the entire project. Overall, through working on this project, I have gained a deeper understanding that will stick with me much longer than the extent of this class, which I think is very valuable. For future students, I would suggest starting early and getting the majority of the project done by Milestone 2, if possible. This is what my team did and it relieved a lot of stress going into week 10/finals. 
+For the report, I take primary ownership over the “Results and Discussion” and the “Conclusion” sections. My other contributions include active participation in team meetings, effective communication in the chat throughout the entire project, and overall edits to the final report. Our team worked well together overall and everyone participated their fair share. This project was helpful in extending my knowledge of the topics we discussed in lecture. As a hands-on learner, application of theory in this way is the most helpful way for me to learn and increase my comprehension of topics that were previously unfamiliar. The topic was interesting and kept me motivated throughout the entire project. Overall, through working on this project, I have gained a deeper understanding that will stick with me much longer than the extent of this class, which I think is very valuable. For future students, I would suggest starting early and getting the majority of the project done by Milestone 2, if possible. This is what my team did and it relieved a lot of stress going into week 10/finals. \\
 
 
 \textbf{Michael Dai}\\
 
 \textbf{Sean Ko}\\
-I drew up the Bayesian networks and wrote out the mathematical derivations for the EM algorithm. I was also a part of the group effort to find the problem statement, dataset, and the features our team wanted to use. The derivations and the drawing solidified my understanding of how EM is used in practice and also broadened my view of where Bayesian networks can be applied. What really helped our team find success was early communication and ownership. Everybody played a part and was not shy to voice their opinion / listen to others.
+I drew up the Bayesian networks and wrote out the mathematical derivations for the EM algorithm. I was also a part of the group effort to find the problem statement, dataset, and the features our team wanted to use. The derivations and the drawing solidified my understanding of how EM is used in practice and also broadened my view of where Bayesian networks can be applied. What really helped our team find success was early communication and ownership. Everybody played a part and was not shy to voice their opinion / listen to others.\\
 
 \textbf{Zirui You}\\
 I developed the model architecture and formulated the experimental design, including comparisons between models with and without hidden states and analyses of balanced versus unbalanced datasets. Additionally, I was responsible for the implementation of the project code and assisted in deriving the EM algorithm’s mathematical formulations. In this project, I learned how important hidden states are when the dataset is limited. Without them, the CPT size explodes to 14,348,907, making it larger than the dataset and impossible to estimate reliably.  Adding 3 hidden states decouples feature dependencies, reduces the CPT size to 737, and significantly improves performance. Although I initially worried that our model was too simple, the hidden-state model still reached about 70\% accuracy and precision on the balanced test set, showing that the methods from this course are genuinely effective for real-world problems.
@@ -284,5 +321,26 @@ I developed the model architecture and formulated the experimental design, inclu
 
 \section{References}
 Khin Yap, J. (2020). Speed dating [Data set]. Kaggle. Retrieved on Nov 19, 2025 from https://www.kaggle.com/datasets/polarbearyap/speed-dating. 
+
+
+\section{Appendix A: Raw Terminal Output }
+
+\begin{center}
+  \includegraphics[width=\linewidth]{terminal_output.png}
+\end{center}
+
+The model results are displayed in the following order: 
+\begin{enumerate}
+    \item EM unbalanced binned
+    \item EM balanced binned
+    \item ML unbalanced binned
+    \item ML balanced binned
+    \item EM unbalanced unbinned
+    \item EM balanced unbinned
+    \item ML unbalanced unbinned
+    \item ML balanced unbinned
+\end{enumerate}
+     
+
 
 \end{document}
