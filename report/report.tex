@@ -225,7 +225,7 @@ In this project, we implemented an 80/20 test–train split, which is common pra
 
 \begin{table}[ht]
 \centering
-\caption{Performance of 4 different models on the dataset evaluated using the given metrics.}
+\caption{Performance of 4 different models on the binned data evaluated using the given metrics.}
 \label{tab:model_results}
 \begin{tabular}{
   l
@@ -253,7 +253,7 @@ $\begin{bmatrix}  135 & 152 \\ 134 & 153 \end{bmatrix}$ \\
 \end{tabular}
 \end{table} 
 
-Table 1 shows the performance of each model on the selected metrics. The numbers are rounded to three decimal points from the raw result given by running the code. The raw terminal output of the code can be seen in Appendix A.
+Table 1 shows the performance of each model on the selected metrics using the binned data. The numbers are rounded to three decimal points from the raw result given by running the code. The raw terminal output of the code can be seen in Appendix A.
 
 Even though the unbalanced EM reached the highest accuracy, it performed much worse on the other tested metrics. This is due to the unbalanced nature of the data, where there are significantly more non-matches than matches, making the model more biased toward non-matches. This can be seen in the confusion matrix, which displays an overwhelming amount of negative predictions and a very small number of true positives. This model mostly captures the dominant non-match pattern in the data but misses many actual matches, indicating that it fails to exploit the more meaningful patterns in the data that distinguish successful from unsuccessful dates.
 
@@ -261,7 +261,7 @@ The best overall performing model was the balanced EM. This predictor performs r
 
 The ML model performance was poor compared to the EM algorithm. Both ML implementations performed poorly on the data, producing barely better than chance (0.50) predictions. The unbalanced version yielded low precision, F1, and PR AUC scores, making the balanced implementation seem better. Nonetheless, even the balanced ML produced predictions that can largely be attributed to random guessing. 
 
-After the initial iteration of the project, we decided to try running our models with unbinned data. All the features still maintained discrete values, some values were given a score 1-100 and others a score of 1-10. Previously, the values were attributed into 3 bins, described in the \emph{Dataset Source and Processing} section. Table 2 displays the results of running the four models described above on unbinned data and evaluates them on the same metrics as before.  
+After the initial iteration of the project, we decided to try running our models with unbinned data. All the features still maintained discrete values, some values were given a score 0-100 and others a score of 0-10. Previously, the values were attributed into 3 bins, described in the \emph{Dataset Source and Processing} section. Table 2 displays the results of running the four models described above on unbinned data and evaluates them on the same metrics as before.  
 
 \begin{table}[ht]
 \centering
@@ -293,9 +293,9 @@ $\begin{bmatrix}  142 & 145 \\ 128 & 159 \end{bmatrix}$ \\
 \end{tabular}
 \end{table} 
 
-Using the unbinned data, there has been a noticeable increase in performance across the board in almost all of the metrics, except for the accuracy in ML unbalanced. This improvement can be attributed to a general increase of true negative and true positive predictions, which is reflected in the confusion matrix. The general trend still remains: unbalanced EM had the highest accuracy, balanced EM had the best overall performance, the two ML models performed worse, and results from balanced ML are very close to chance. 
+Using the unbinned data, there has been a noticeable increase in performance across the board in almost all of the metrics, except for the accuracy in ML unbalanced. This improvement can be attributed to a general increase of true negative and true positive predictions, which are reflected in the confusion matrices. The general trend still remains: unbalanced EM had the highest accuracy, balanced EM had the best overall performance, the two ML models performed worse, and results from balanced ML are very close to chance. 
 
-Overall, the ML algorithms performed much worse than the EM ones, illustrating that the more robust EM-based model with latent variables generalizes better on unseen data. Additionally, balanced implementations consistently outperformed the unbalanced ones, showing the significance of dataset manipulation and balancing. Additionally, in our second implementation, using unbinned data noticeably improved the performance on the given metrics but the originally discovered trends of model performance were maintained.  \\
+Overall, the ML algorithms performed much worse than the EM ones, illustrating that the more robust EM-based model with latent variables generalizes better on unseen data. It can also be seen that balanced implementations consistently outperformed the unbalanced ones, showing the significance of dataset manipulation and balancing. Additionally, in our second implementation, using unbinned data noticeably improved the performance on the given metrics but the originally discovered trends of model performance were maintained.  \\
 
 \section{Conclusion}
 In this project, we attempted to predict the probability of a second date based on features derived from three hand-picked traits: attractiveness, intelligence, and sincerity. We constructed a Bayesian Network with hidden variables and applied the EM and ML algorithms to obtain the most accurate prediction of a match. The EM models significantly outperformed the ML ones, and there was notable improvement in balancing the dataset. The balanced EM model performed best overall, giving us the highest and most evenly distributed results on several model assessment metrics. 
@@ -311,6 +311,7 @@ For the report, I take primary ownership over the “Results and Discussion” a
 
 
 \textbf{Michael Dai}\\
+I performed data analysis and preprocessing on the raw data to fit it to our model’s parameters. The dataset we chose did not require much preparation, as most of it was clean. However, for example, we still had to fix an issue due to spelling errors in the raw data, which was a result of discrepancies between the data’s CSV file and its online description on Kaggle. I wrote some helper functions for running a second test and storing some MLE probabilities. I ran a second test to test model performance given slightly different data. We wanted to observe whether given 2 sets of similar data from the same observation of the sample, what differences can appear. I also edited and proofread the report. I learned that knowing the data’s structure, values, and possible errors is important for reaching good model results and can reduce debugging time. I also learned how to process the raw data into a format the model can understand and how choosing data features can affect model performance. \\
 
 \textbf{Sean Ko}\\
 I drew up the Bayesian networks and wrote out the mathematical derivations for the EM algorithm. I was also a part of the group effort to find the problem statement, dataset, and the features our team wanted to use. The derivations and the drawing solidified my understanding of how EM is used in practice and also broadened my view of where Bayesian networks can be applied. What really helped our team find success was early communication and ownership. Everybody played a part and was not shy to voice their opinion / listen to others.\\
