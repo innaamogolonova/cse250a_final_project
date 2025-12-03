@@ -4,13 +4,44 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 
+def get_features(f="all",binned=False):
+    attractive = ["attractive","attractive_partner",  "attractive_o",  "attractive_important",  "pref_o_attractive"]
+    sincere = ["sincere",      "sincere_partner",     "sinsere_o",     "sincere_important",     "pref_o_sincere"]
+    intel = ["intelligence",   "intelligence_partner","intelligence_o","intellicence_important","pref_o_intelligence"]
+    
+    d_attractive = ["d_attractive","d_attractive_partner",  "d_attractive_o",  "d_attractive_important",  "d_pref_o_attractive"]
+    d_sincere = ["d_sincere",      "d_sincere_partner",     "d_sincere_o",     "d_sincere_important",     "d_pref_o_sincere"]
+    d_intel = ["d_intelligence",   "d_intelligence_partner","d_intelligence_o","d_intelligence_important","d_pref_o_intelligence"]
+
+    features = attractive + sincere + intel
+    d_features = d_attractive + d_sincere + d_intel
+
+    if f == "attractive":
+        if binned:
+            return d_attractive
+        else:
+            return attractive
+    elif f == "sincere":
+        if binned:
+            return d_sincere
+        else:
+            return sincere
+    elif f == "intelligence":
+        if binned:
+            return d_intel
+        else:
+            return intel
+    else:
+        if binned:
+            return d_features
+        else:
+            return features
+
+
 def get_feature_df():
     orig_df = pd.read_csv("../speeddating.csv",low_memory=False)
 
-    attractive = ["attractive","attractive_partner",  "attractive_o",  "attractive_important",  "pref_o_attractive"]
-    sincere = ["sincere",      "sincere_partner",                      "sincere_important",     "pref_o_sincere"]
-    intel = ["intelligence",   "intelligence_partner","intelligence_o",                         "pref_o_intelligence"]
-    kept_features = attractive + sincere + intel + ["match"]
+    kept_features = get_features() + ["match"]
 
     feature_df = orig_df[kept_features].apply(pd.to_numeric, errors='coerce').fillna(-1).astype(int)
 

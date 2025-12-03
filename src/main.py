@@ -62,7 +62,8 @@ if __name__ == "__main__":
 
     X_list = []
     for f in ["attractive", "sincere", "intelligence"]:
-        columns = get_columns(f)
+        # columns = get_columns(f)
+        columns = di.get_features(f,True)
         feature = Feature(f, columns, data[columns])
         feature.encode()
         X_list.append(feature.encoded_data)
@@ -82,7 +83,7 @@ if __name__ == "__main__":
 
     data_2 = di.get_feature_df()
 
-    X_2 = data_2.iloc[:,:13].copy().to_numpy()
+    X_2 = data_2.iloc[:,:15].copy().to_numpy()
     Y_2 = np.array(data_2["match"].copy())
 
     X_train_2, X_test_2, Y_train_2, Y_test_2 = train_test_split(
